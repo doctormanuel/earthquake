@@ -1,0 +1,99 @@
+---
+title: "Introduction to EarthquakeVisualization"
+author: "Manuel"
+date: "2020-12-17"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{earthquakevisualization}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(EarthquakeVisualization)
+```
+
+The EarthquakeVisualization R package provides functionality to process, clean
+and visualize earthquake datasets downloaded from the [NOAA Significant
+Earthquake Database] (https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/search).
+
+## eq_clean_data
+This function applies some cleaning processes to a dataframe originiting from
+the \href{https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/search}{NOAA Significant Earthquake Database}.
+Specifically, it converts the Latitude and Longitude columns to numeric class
+and combines year, month and day into a single variable in the Date class. The
+dataset needs to be read before using this function. Example:
+```{r, eval=FALSE}
+library(readr)
+filename="earthquakes.tsv"
+data=read_delim(filename,delim="\t")
+data=data[-1,]
+cleandata <- eq_clean_data(rawdata)
+```
+
+## eq_location_clean
+This function applies some cleaning processes to the Location Name column in
+a dataset downloaded from the \href{https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/search}{NOAA Significant Earthquake Database}.
+Specifically, it drops any location beyond that or those of the first
+occurring country, it drops the preceding name of country and region, and
+converts the resulting location name to title case. Example:
+```{r, eval=FALSE}
+cleandata <- eq_location_clean(data)
+```
+
+## geom_timeline
+This function implements a ggplot2 geom that allows to display earthquake data
+along a time line. Data from multiple countries can be represented in parallel
+time lines. Earthquake magnitude, total number of deaths and other variables can
+be also shown using typical ggplot2 parameters, such as color, or size. The
+dataframe needs to be processed by eq_clean_data before using geom_timeline.
+```{r, eval=FALSE}
+library(ggplot2)
+library(magrittr)
+data %>% eq_clean_data() %>% ggplot() +
+  geom_timeline(aes(x = Date, y = Country, size = Mag, color = `Total Deaths`)
+```
+
+
+## geom_timeline
+This function implements a ggplot2 geom that allows to annotate an earthquake
+timeline plot created using geom_timeline. The dataframe needs to be processed
+by eq_clean_data and eq_location_clean before using geom_timeline_label.
+```{r, eval=FALSE}
+library(ggplot2)
+library(magrittr)
+data %>% eq_clean_data() %>% eq_location_clean() %>% ggplot() +
+  geom_timeline(aes(x = Date, y = Country, size = Mag, color = `Total Deaths`) +
+  geom_timeline_label(aes(x = Date, y = Country, label = `Location Name`, mag = Mag, n_max = 5))
+```
+
+
+## eq_create_label
+
+This function creates an HTML label as a new column in an earthquake dataframe
+where Location, Magnitude and Total Deaths are introduced, together with
+labels, and that can be used for Leaflet map annotation. The dataframe needs to
+be processed at least by eq_location_clean before using eq_create_label.
+```{r, eval=FALSE}
+annotateddata <- eq_create_label(data)
+```
+
+
+## eq_map
+This function creates an interactive Leaflet map to visualize earthquake
+locations contained in the input dataframe marking them with a circle whose
+size is proportional to the earthquake's magnitude. Earthquake locations can
+be annotated.
+```{r, eval=FALSE}
+library(magrittr)
+data %>% eq_clean_data() %>% eq_location_clean() %>% eq_create_label() +
+  eq_map(annot_col="popup_text")
+```
+

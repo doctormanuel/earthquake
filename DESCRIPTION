@@ -1,0 +1,33 @@
+Package: EarthquakeVisualization
+Type: Package
+Title: Cleans and Displays Earthquake data
+Version: 0.1.0
+Author:  Manuel <manuel@somewhere.net>
+Maintainer:  Manuel <manuel@somewhere.net>
+Description: A set of functions to clean and process data from the NOAA
+    Significant Earthquake Database, and visualize is by using ad hoc
+    ggplot2 geoms and Leaflet maps.
+License: None
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+URL: https:/github.com/doctormanuel/earthquake
+BugReports: https://github.com/doctormanuel/earthquake/issues
+RoxygenNote: 7.1.1
+Imports: 
+    dplyr,
+    readr,
+    magrittr,
+    lubridate,
+    stringr,
+    stringi,
+    ggplot2,
+    grid,
+    scales,
+    utils,
+    leaflet,
+    qpdf

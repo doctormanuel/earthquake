@@ -2,6 +2,7 @@
 # EarthquakeVisualization
 
 <!-- badges: start -->
+[![Travis build status](https://travis-ci.com/doctormanuel/earthquake.svg?branch=master)](https://travis-ci.com/doctormanuel/earthquake)
 <!-- badges: end -->
 
 The goal of EarthquakeVisualization is to provide a set of functions to clean
